@@ -1,7 +1,8 @@
 package persistence
 
 type DatabaseHandler interface {
-	AddEvent() ([]byte, error)
-	FindEvent() (Event, error)
-	FindAllEvent() ([]Event, error)
+	AddEvent(Event) ([]byte, error)
+	FindEvent([]byte) (Event, error)
+	FindEventByName(string) (Event, error)
+	FindAllEvents() ([]Event, error)
 }

@@ -3,7 +3,7 @@ package mongo
 import (
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"mycroservice/libs/persistence"
+	"github.com/kdblitz/go-microservice-practice/libs/persistence"
 )
 
 const (
@@ -15,7 +15,7 @@ type MongoDBLayer struct {
 	session *mgo.Session
 }
 
-func NewMongoDBLayer(connection string) (*MongoDBLayer, error) {
+func NewMongoDBLayer(connection string) (persistence.DatabaseHandler, error) {
 	s, err := mgo.Dial(connection)
 	if err != nil {
 		return nil, err
