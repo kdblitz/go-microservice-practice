@@ -1,12 +1,12 @@
-package main
+package rest
 
 import (
-	"net/http"
 	"github.com/kdblitz/go-microservice-practice/libs/persistence"
 	"github.com/gorilla/mux"
+	"net/http"
 )
 
-func ServeAPI(endpoint string, databasehandler persistence.DatabaseHandler) {
+func ServeAPI(endpoint string, databasehandler persistence.DatabaseHandler) error {
 	handler := NewEventHandler(databasehandler)
 
 	mainRouter := mux.NewRouter()
