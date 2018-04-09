@@ -8,15 +8,19 @@ import (
 	"strings"
 	"encoding/hex"
 	"encoding/json"
+	"github.com/kdblitz/go-microservice-practice/libs/msgqueue"
+	"github.com/kdblitz/go-microservice-practice/contracts"
 )
 
 type eventServiceHandler struct {
 	dbhandler persistence.DatabaseHandler
+	eventEmitter msgqueue.EventEmitter
 }
 
-func NewEventHandler(databasehandler persistence.DatabaseHandler) *eventServiceHandler {
+func NewEventHandler(databasehandler persistence.DatabaseHandler, eventEmitter msgqueue.EventEmitter) *eventServiceHandler {
 	return &eventServiceHandler{
 		dbhandler: databasehandler,
+		eventEmitter: eventEmitter,
 	}
 }
 
@@ -82,4 +86,10 @@ func (eh *eventServiceHandler) NewEvent(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	msg := contracts.EventCreatedEvent{
+		ID: hex.EncodeToString(id),
+		Name: event.Name,
+		LocationID: event.Location.ID,
+	}
+	eh.eventEmitter.Emit(&msg)
 }
