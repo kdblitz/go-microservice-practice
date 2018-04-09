@@ -18,7 +18,7 @@ func (ep *EventProcessor) ProcessEvents() error {
 	if err != nil {
 		return err
 	}
-
+	fmt.Printf("start process")
 	for {
 		select {
 		case evt := <-received:
@@ -30,6 +30,7 @@ func (ep *EventProcessor) ProcessEvents() error {
 }
 
 func (ep *EventProcessor) handleEvent(event msgqueue.Event) {
+	fmt.Printf("handling evt %T", event)
 	switch e := event.(type) {
 	case *contracts.EventCreatedEvent:
 		ep.Database.AddEvent(persistence.Event{
