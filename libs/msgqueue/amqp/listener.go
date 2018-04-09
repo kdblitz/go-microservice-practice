@@ -9,7 +9,7 @@ import (
 )
 
 type amqpEventListener struct {
-	connection amqp.Connection
+	connection *amqp.Connection
 	queue string
 }
 
@@ -23,7 +23,7 @@ func NewAMQPEventListener(conn *amqp.Connection, queue string) (msgqueue.EventLi
 	if err != nil {
 		return nil, err
 	}
-	return &listener, nil
+	return listener, nil
 }
 
 func (a *amqpEventListener) setup() error {

@@ -89,7 +89,7 @@ func (eh *eventServiceHandler) NewEvent(w http.ResponseWriter, r *http.Request) 
 	msg := contracts.EventCreatedEvent{
 		ID: hex.EncodeToString(id),
 		Name: event.Name,
-		LocationID: event.Location.ID,
+		LocationID: string(event.Location.ID),
 	}
 	eh.eventEmitter.Emit(&msg)
 }

@@ -12,6 +12,7 @@ var (
 	DBConnectionDefault = "mongodb://127.0.0.1"
 	RestfulEPDefault = "localhost:8181"
 	RestfulTLSEPDefault = "localhost:9191"
+	AMQPMessageBrokerDefault = "amqp://guest:guest@192.168.56.101:5672"
 )
 
 type ServiceConfig struct {
@@ -28,6 +29,7 @@ func ExtractConfig(filename string) (ServiceConfig, error) {
 		DBConnectionDefault,
 		RestfulEPDefault,
 		RestfulTLSEPDefault,
+		AMQPMessageBrokerDefault,
 	}
 	file, err := os.Open(filename)
 	if err != nil {

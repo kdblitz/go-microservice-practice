@@ -7,7 +7,7 @@ import (
 )
 
 type amqpEventEmitter struct {
-	connection amqp.Connection
+	connection *amqp.Connection
 }
 
 func NewAMQPEventEmitter(conn *amqp.Connection) (msgqueue.EventEmitter, error) {
@@ -18,7 +18,7 @@ func NewAMQPEventEmitter(conn *amqp.Connection) (msgqueue.EventEmitter, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &emitter, nil
+	return emitter, nil
 }
 
 func (a *amqpEventEmitter) setup() error {
@@ -30,7 +30,7 @@ func (a *amqpEventEmitter) setup() error {
 	return channel.ExchangeDeclare("events", "topic", true, false, false, false, nil)
 }
 
-func (a *amqpEventEmitter) emit(event msgqueue.Event) error {
+func (a *amqpEventEmitter) Emit(event msgqueue.Event) error {
 	channel, err := a.connection.Channel()
 	if err != nil {
 		return err
