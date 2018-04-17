@@ -9,6 +9,7 @@ import (
 const (
 	DB = "myevents"
 	EVENTS = "events"
+	USERS = "users"
 )
 
 type MongoDBLayer struct {
@@ -63,6 +64,13 @@ func (mgoLayer *MongoDBLayer) FindAllEvents() ([]persistence.Event, error) {
 	return e, err
 }
 
+func (mgoLayer *MongoDBLayer) AddBookingForUser(id []byte, booking persistence.Booking) error {
+	s := mgoLayer.getFreshSession()
+	defer s.Close()
+	return s.DB(DB).C(USERS).UpdateId(bson.ObjectId(id), bson.M{"$addToSet" : bson.M{"booking": []persistence.Booking{booking}}})
+}
+
 func (mgoLayer *MongoDBLayer) getFreshSession() *mgo.Session {
 	return mgoLayer.session.Copy()
 }
+

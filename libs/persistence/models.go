@@ -17,3 +17,9 @@ type Hall struct {
 	Name string
 	Capacity int
 }
+
+type Booking struct {
+	Date int64
+	EventID []byte
+	Seats int
+}

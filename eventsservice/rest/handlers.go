@@ -71,6 +71,27 @@ func (eh *eventServiceHandler) AllEvent(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+func (eh *eventServiceHandler) OneEventHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	eventID, ok := vars["eventID"]
+	if !ok {
+		w.WriteHeader(400)
+		fmt.Fprint(w, "missing route parameter 'eventID'")
+		return
+	}
+
+	eventIDBytes, _ := hex.DecodeString(eventID)
+	event, err := eh.dbhandler.FindEvent(eventIDBytes)
+	if err != nil {
+		w.WriteHeader(404)
+		fmt.Fprintf(w, "event %s not found", eventID)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(&event)
+}
+
 func (eh *eventServiceHandler) NewEvent(w http.ResponseWriter, r *http.Request)  {
 	event := persistence.Event{}
 	err := json.NewDecoder(r.Body).Decode(&event)

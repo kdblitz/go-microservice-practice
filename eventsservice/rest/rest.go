@@ -16,8 +16,9 @@ func ServeAPI(endpoint, tlsEndpoint string, databaseHandler persistence.Database
 
 	server := handlers.CORS()(mainRouter)
 
-	eventsRouter.Methods("GET").Path("{SearchCriteria}/{query}").HandlerFunc(handler.FindEvent)
+	eventsRouter.Methods("GET").Path("/{SearchCriteria}/{query}").HandlerFunc(handler.FindEvent)
 	eventsRouter.Methods("GET").Path("").HandlerFunc(handler.AllEvent)
+	eventsRouter.Methods("GET").Path("/{eventID}").HandlerFunc(handler.OneEventHandler)
 	eventsRouter.Methods("POST").Path("").HandlerFunc(handler.NewEvent)
 
 	httpErrChan := make(chan error)
