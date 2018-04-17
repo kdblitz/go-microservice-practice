@@ -49,7 +49,7 @@ func (a *amqpEventListener) Listen(eventNames ...string) (<-chan msgqueue.Event,
 			return nil, nil, err
 		}
 	}
-
+	fmt.Println("listening")
 	msgs, err := channel.Consume(a.queue, "", false, false, false, false, nil)
 	if err != nil {
 		return nil, nil, err

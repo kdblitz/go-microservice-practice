@@ -13,3 +13,7 @@ type EventCreatedEvent struct {
 func (ec *EventCreatedEvent) EventName() string {
 	return "eventCreated"
 }
+
+func (ec *EventCreatedEvent) PartitionKey() string {
+	return ec.ID
+}

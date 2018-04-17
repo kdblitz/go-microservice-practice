@@ -7,6 +7,10 @@ import (
 	"github.com/streadway/amqp"
 	msgqueue_amqp "github.com/kdblitz/go-microservice-practice/libs/msgqueue/amqp"
 	"github.com/kdblitz/go-microservice-practice/bookingservice/listener"
+	"github.com/kdblitz/go-microservice-practice/libs/msgqueue"
+	"github.com/Shopify/sarama"
+	"github.com/kdblitz/go-microservice-practice/libs/msgqueue/kafka"
+	"github.com/kdblitz/go-microservice-practice/eventsservice/rest"
 )
 
 func main()  {
@@ -22,14 +26,29 @@ func main()  {
 		panic(err)
 	}
 
-	mq, err := amqp.Dial(config.AMQPMessageBroker)
-	if err != nil {
-		panic(err)
-	}
+	var eventListener msgqueue.EventListener
+	switch config.MessageBrokerType {
+	case "amqp":
+		mq, err := amqp.Dial(config.AMQPMessageBroker)
+		if err != nil {
+			panic(err)
+		}
 
-	eventListener, err := msgqueue_amqp.NewAMQPEventListener(mq, "events")
-	if err != nil {
-		panic(err)
+		eventListener, err = msgqueue_amqp.NewAMQPEventListener(mq, "events")
+		if err != nil {
+			panic(err)
+		}
+	case "kafka":
+		conf := sarama.NewConfig()
+		conf.Producer.Return.Successes = true
+		conn, err := sarama.NewClient(config.KafkaMessageBrokers, conf)
+		if err != nil {
+			panic(err)
+		}
+
+		eventListener, err = kafka.NewKafkaEventListener(conn, []int32{})
+	default:
+		panic("invalid message broker type:" + config.MessageBrokerType)
 	}
 
 	processor := &listener.EventProcessor{
@@ -39,5 +58,5 @@ func main()  {
 
 	processor.ProcessEvents()
 
-	//rest.ServeAPI(config.Restfu)
+	rest.ServeAPI(config.RestfulEndpoint, )
 }
